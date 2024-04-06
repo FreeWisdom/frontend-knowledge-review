@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MVVM Example</title>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <form id="login-form">
+      <label for="username">Username:</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        data-bind="value: username"
+      /><br /><br />
+      <label for="password">Password:</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        data-bind="value: password"
+      /><br /><br />
+      <button type="button" id="login-btn">Login</button>
+    </form>
+    <p id="login-result"></p>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>MVC Example</title>
+  </head>
+  <body>
+    <h1>数字: <span id="number"></span></h1>
+    <!-- 输入框 -->
+    <input type="number" id="number-input" />
+
+    <script>
+      // 模型
+      const model = {
+        data: {
+          number: 0,
+        },
+
+        // 更新数据并通知视图
+        updateData(data) {
+          // 更新数据
+          this.data.number = data.number;
+          // 通知视图
+          view.update();
+        },
+      };
+
+      // 视图
+      const view = {
+        // 更新视图
+        update() {
+          const number = model.data.number;
+          document.getElementById("number").innerHTML = number;
+          // 根据数字的奇偶性选择不同的渲染方式
+          document.getElementById("number").style.color =
+            number % 2 === 0 ? "red" : "blue";
+        },
+      };
+
+      // 控制器
+      const controller = {
+        // 处理数字改变事件
+        handleNumberChange(e) {
+          // 获取输入的数字
+          const number = parseInt(e.target.value);
+          // 更新模型数据
+          model.updateData({ number });
+        },
+
+        // 初始化控制器
+        init() {
+          // 更新视图
+          view.update();
+
+          // 绑定数字改变事件处理程序
+          document
+            .getElementById("number-input")
+            .addEventListener("change", this.handleNumberChange.bind(this)); // 使用bind绑定this
+        },
+      };
+
+      // 初始化控制器
+      controller.init();
+    </script>
+  </body>
+</html>

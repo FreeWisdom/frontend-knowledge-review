@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>MVC Example</title>
+  </head>
+  <body>
+    <h1>数字: <span id="number"></span></h1>
+    <!-- 输入框 -->
+    <input type="number" id="number-input" />
+
+    <script>
+      // 观察者模式实现
+      const Observer = {
+        // 添加观察者
+        add(subject, observer) {
+          subject.observers.push(observer);
+        },
+
+        // 通知观察者
+        notify(subject) {
+          subject.observers.forEach((observer) => observer.update());
+        },
+      };
+
+      // 策略模式实现
+      const Strategy = {
+        // 渲染方式一：红色
+        renderRed() {
+          document.getElementById("number").style.color = "red";
+        },
+
+        // 渲染方式二：蓝色
+        renderBlue() {
+          document.getElementById("number").style.color = "blue";
+        },
+      };
+
+      // 工厂模式实现
+      const Factory = {
+        // 创建视图
+        createView(model) {
+          return {
+            // 更新视图
+            update() {
+              const number = model.data.number;
+              document.getElementById("number").innerHTML = number;
+
+              // 根据数字的奇偶性选择不同的渲染方式
+              if (number % 2 === 0) {
+                Strategy.renderRed();
+              } else {
+                Strategy.renderBlue();
+              }
+            },
+          };
+        },
+      };
+
+      // 模型
+      const model = {
+        data: {
+          number: 0,
+        },
+
+        // 观察者数组
+        observers: [],
+
+        // 更新数据并通知观察者
+        updateData(data) {
+          // 更新数据
+          this.data.number = data.number;
+          // 通知观察者
+          Observer.notify(this);
+        },
+      };
+
+      // 视图
+      const view = Factory.createView(model);
+
+      // 控制器
+      const controller = {
+        // 处理数字改变事件
+        handleNumberChange(e) {
+          // 获取输入的数字
+          const number = parseInt(e.target.value);
+          // 更新模型数据
+          model.updateData({ number });
+        },
+
+        // 初始化控制器
+        init() {
+          // 更新视图
+          view.update();
+
+          // 绑定数字改变事件处理程序
+          document
+            .getElementById("number-input")
+            .addEventListener("change", this.handleNumberChange.bind(this)); // 使用bind绑定this
+        },
+      };
+
+      // 初始化控制器
+      controller.init();
+
+      // 将视图注册为观察者
+      Observer.add(model, view);
+    </script>
+  </body>
+</html>
