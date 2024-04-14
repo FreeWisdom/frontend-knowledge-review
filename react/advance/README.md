@@ -254,6 +254,8 @@ export default VisibleAPI;
 
 ### 1.2.3、context
 
+> - 注意：类的写法可以在 hoc 中直接使用 hooks，函数的写法不行。函数若想在 hoc 中使用 hooks 需要新建一个组件，在新建的组件中使用 hooks。见见 demo ../app-demo/src/ContextDemo。
+
 #### 1.2.3.1、类用法
 
 ThemeContext
@@ -320,6 +322,8 @@ class Child2 extends Component {
 
 #### 1.2.3.2、函数用法
 
+- 见 demo ../app-demo/src/ContextDemo
+
 ```jsx
 import React, { createContext, useContext } from "react";
 
@@ -367,11 +371,9 @@ export default FuncContext;
 
 ### 1.2.4、HOC
 
-#### 属性代理
+#### 1.2.4.1、属性代理
 
-- 正常的高阶函数用法，我给最终的 component，传入一些能力
-  - 外面包一层样式；
-  - 把 history 给你注入进去
+- 见 ../app-demo/src/HOCPackage
 
 ```jsx
 // 正常卡片包裹写法
@@ -409,3 +411,18 @@ export const withCard = (title) => (Component) => {
   };
 };
 ```
+
+#### 1.2.4.1、反向继承
+
+- 见 ../app-demo/src/ReverseExtendFun.tsx
+- 见 ../app-demo/src/ReverseExtend.tsx
+
+<!-- todo -->
+
+### 1.2.5、渲染控制
+
+- 渲染控制本质就是 useMemo 的原理
+
+### 1.2.6、useMemo 的使用
+
+### 1.2.7、useCallBack 的使用

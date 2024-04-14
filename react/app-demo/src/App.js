@@ -1,23 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import ContextDemo from "./ContextDemo.tsx";
+import HOCPackage from "./HOCPackage.tsx";
+import ReverseExtend from "./ReverseExtend.tsx";
+import ReverseExtendFun from "./ReverseExtendFun.tsx";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ContextDemo />
+      <HOCPackage text="Hello World" />
+      <ReverseExtend />
+      <ReverseExtendFun />
+      {/* <PropertyBroker title="Property Broker" /> */}
     </div>
   );
 }
