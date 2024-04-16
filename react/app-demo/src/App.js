@@ -5,22 +5,44 @@ import "./App.css";
 // import ReverseExtendFun from "./ReverseExtendFun.tsx";
 // import RenderControlFun from "./RenderControlFun.tsx";
 
-import ReduxDemo from "./ReduxDemo/index.tsx";
-import store from "./ReduxDemo/useLibRedux/store.ts";
-import { Provider } from "react-redux";
+// import ReduxLibDemo from "./ReduxDemo/useLibRedux/index.tsx";
+// import store from "./ReduxDemo/useLibRedux/store.ts";
+// import { Provider } from "react-redux";
+
+// import ReduxDiyDemo0 from "./ReduxDemo/useDiyRedux0/index.tsx";
+// import ReduxDiyDemo1 from "./ReduxDemo/useDiyRedux1/index.tsx";
+import ReduxDiyDemo2 from "./ReduxDemo/useDiyRedux2/index.tsx";
 
 function App() {
   return (
     <div className="App">
-      {/* <ContextDemo />
+      {/* 
+
+      // contex API 使用示例
+      <ContextDemo />
+
+      // 高级组件包裹
       <HOCPackage text="Hello World" />
+
+      // 反向继承
       <ReverseExtend />
-      <ReverseExtendFun /> */}
+      <ReverseExtendFun /> 
+      
+      */}
+
+      {/* 渲染控制-手写 useMemo */}
       {/* <RenderControlFun /> */}
       {/* <PropertyBroker title="Property Broker" /> */}
-      <Provider store={store}>
-        <ReduxDemo />
-      </Provider>
+
+      {/* redux 使用示例 */}
+      {/* <Provider store={store}>
+        <ReduxLibDemo />
+      </Provider> */}
+
+      {/* 手写 redux 示例 */}
+      {/* <ReduxDiyDemo0 /> */}
+      {/* <ReduxDiyDemo1 /> */}
+      <ReduxDiyDemo2 />
     </div>
   );
 }
