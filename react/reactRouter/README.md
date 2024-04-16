@@ -14,6 +14,6 @@
 
 > https://juejin.cn/post/7187199524903845946?searchId=20240414174629A9E575F169510C1F223B#heading-0
 
-# 4、撕破代码 react 的路由原理
+# 4、手撕代码 react 的路由原理
 
 - todo

@@ -422,6 +422,31 @@ export const withCard = (title) => (Component) => {
 ### 1.2.5、渲染控制
 
 - 渲染控制本质就是 useMemo 的原理
+- 见 ../app-demo/src/RenderControlFun.tsx
+
+```ts
+const isDepEqual = (preDep, curDep) => {
+  if (preDep === null) return false;
+  for (let index = 0; index < curDep.length; index++) {
+    if (preDep[index] !== curDep[index]) return false;
+  }
+  return true;
+};
+const useMyMemo = (callback, dep) => {
+  const memoResRef = useRef(callback());
+  const preDepRef = useRef(dep);
+  console.log("preDepRef", preDepRef.current, dep);
+
+  const isDepChange = !isDepEqual(preDepRef.current, dep);
+
+  if (isDepChange) {
+    memoResRef.current = callback();
+    preDepRef.current = dep;
+  }
+
+  return memoResRef.current;
+};
+```
 
 ### 1.2.6、useMemo 的使用
 
