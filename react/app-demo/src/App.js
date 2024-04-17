@@ -11,7 +11,8 @@ import "./App.css";
 
 // import ReduxDiyDemo0 from "./ReduxDemo/useDiyRedux0/index.tsx";
 // import ReduxDiyDemo1 from "./ReduxDemo/useDiyRedux1/index.tsx";
-import ReduxDiyDemo2 from "./ReduxDemo/useDiyRedux2/index.tsx";
+// import ReduxDiyDemo2 from "./ReduxDemo/useDiyRedux2/index.tsx";
+import ReduxDiyDemo3 from "./ReduxDemo/useDiyRedux3/index.tsx";
 
 function App() {
   return (
@@ -42,7 +43,8 @@ function App() {
       {/* 手写 redux 示例 */}
       {/* <ReduxDiyDemo0 /> */}
       {/* <ReduxDiyDemo1 /> */}
-      <ReduxDiyDemo2 />
+      {/* <ReduxDiyDemo2 /> */}
+      <ReduxDiyDemo3 />
     </div>
   );
 }

@@ -337,4 +337,225 @@ export default ReduxDiyDemo;
 
 ## 2.4、实现 Connect（react-Redux）
 
+- 见 ./app-demo/src/ReduxDemo/useDiyRedux3
+- redux.js
+
+```js
+export const createStore = (reducer, initialState) => {
+  let data = initialState;
+  let listeners = [];
+
+  const subscribe = (listener) => {
+    listeners.push(listener);
+
+    // 返回取消订阅的函数
+    return () => {
+      const index = listeners.indexOf(listener);
+      listeners.splice(index, 1);
+    };
+  };
+
+  const dispatch = (action) => {
+    data = reducer(data, action);
+    listeners.forEach((listener) => listener());
+  };
+
+  const getState = () => {
+    return data;
+  };
+
+  return {
+    subscribe,
+    dispatch,
+    getState,
+  };
+};
+
+export const combineReducer = (reducers) => {
+  const keys = Object.keys(reducers); // 先拿到 ['counter', 'info'];
+
+  // 返回的也是一个 reducer
+  return function (state = {}, action) {
+    const nextState = {};
+
+    keys.forEach((key) => {
+      const reducer = reducers[key]; // counterReducer, infoReducer
+      const prev = state[key]; // { count: 1 },   { name: "zhz", age: 36 }
+      const next = reducer(prev, action); // { count: 2 }, { name: "zhz", age: 37 }
+
+      nextState[key] = next;
+    });
+
+    return nextState;
+  };
+};
+```
+
+- store.js
+
+```js
+import { createStore, combineReducer } from "./redux";
+
+const initialState = {
+  counter: {
+    count: 0,
+  },
+  info: {
+    name: "张三",
+  },
+};
+
+const counterReducer = (state, action) => {
+  switch (action.type) {
+    case "INCREMENT":
+      return { count: state.count + 1 };
+    case "DECREMENT":
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+
+const nameReducer = (state, action) => {
+  switch (action.type) {
+    case "UPDATE_NAME":
+      return { name: action.payload };
+    default:
+      return state;
+  }
+};
+
+const reducer = combineReducer({
+  counter: counterReducer,
+  info: nameReducer,
+});
+
+export const store = createStore(reducer, initialState);
+```
+
+- useForceUpdate.js
+
+```js
+import { useCallback, useState } from "react";
+
+const useForceUpdate = () => {
+  const [, setState] = useState(true);
+
+  const update = useCallback(() => {
+    setState((s) => !s);
+  }, []);
+
+  return update;
+};
+
+export default useForceUpdate;
+```
+
+- connect.js
+
+```js
+import { useContext, useEffect } from "react";
+import ReduxContext from "./context";
+import useForceUpdate from "./useForceUpdate";
+
+/**
+ *
+ * @param {*} mapStateToProps
+ * @param {*} mapDispatchToProps
+ * @returns
+ *
+ * 手写 connect 思路：
+ * 1、使用createContext来进行跨层级数据传递（store）
+ * 2、使用connect返回新组件（高阶组件思想）
+ */
+
+export const connect =
+  (mapStateToProps, mapDispatchToProps) => (MyComponent) => {
+    return function ConnectComponent(props) {
+      const _store = useContext(ReduxContext);
+      const update = useForceUpdate();
+
+      useEffect(() => {
+        // 订阅
+        const unsuscribe = _store.subscribe(() => {
+          update();
+        });
+
+        // 取消订阅
+        return () => {
+          unsuscribe();
+        };
+      }, [_store, update]);
+
+      return (
+        <MyComponent
+          {...props}
+          {...mapStateToProps(_store.getState())}
+          {...mapDispatchToProps(_store.dispatch)}
+        />
+      );
+    };
+  };
+```
+
+- ReduxDiyDemo.tsx（组件中使用 store）
+
+```jsx
+import React from "react";
+import { connect } from "./connect";
+
+const ReduxDiyDemo = (props) => {
+  const { counter, info, increment, decrement, updateName } = props;
+
+  return (
+    <div>
+      <h2>Count: {counter.count}</h2>
+      <h2>Name: {info.name}</h2>
+      <button onClick={() => increment()}>Increment</button>
+      <button onClick={() => decrement()}>Decrement</button>
+      <input value={info.name} onChange={(e) => updateName(e.target.value)} />
+    </div>
+  );
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    increment: () => {
+      dispatch({ type: "INCREMENT" });
+    },
+    decrement: () => {
+      dispatch({ type: "DECREMENT" });
+    },
+    updateName: (name: string) => {
+      dispatch({ type: "UPDATE_NAME", payload: name });
+    },
+  };
+};
+
+const mapStateToProps = (state) => ({
+  counter: state.counter,
+  info: state.info,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReduxDiyDemo);
+```
+
+- root.js
+
+```js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+import ReduxContext from "./ReduxDemo/useDiyRedux3/context";
+import { store } from "./ReduxDemo/useDiyRedux3/store";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <ReduxContext.Provider value={store}>
+    <App />
+  </ReduxContext.Provider>
+```
+
 # 3、实现 Proxy 的 Mobx
