@@ -556,6 +556,7 @@ root.render(
   <ReduxContext.Provider value={store}>
     <App />
   </ReduxContext.Provider>
+);
 ```
 
 # 3、实现 Proxy 的 Mobx
