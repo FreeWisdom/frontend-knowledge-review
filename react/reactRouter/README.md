@@ -458,8 +458,102 @@
 
 # 9、手撕代码 react 的路由原理
 
-- todo
+1. 第一步，以 Routes 为抓手，带出来一些与 Routes 相关的核心方法
 
+```js
+// router.js
+
+const LocationContext = createContext({});
+
+// ④
+const useLocation = () => {
+  return useContext(LocationContext).location;
+};
+
+// ③
+// 根据 js 树和 url 路径，返回与路由匹配的 element（组件）
+const useRoutes = (routes) => {
+  let location = useLocation();
+  const curPath = location.pathname || "/";
+
+  for (let i = 0; i <= routes.length; i++) {
+    let { path, element } = routes[i];
+    let match = curPath.match(new RegExp(`^${path}`));
+
+    if (match) {
+      return element;
+    }
+  }
+
+  return null;
+};
+
+// ②
+// 根据 Routes 嵌套语法，生成 js 树
+const createRoutesFromChildren = (children) => {
+  let routes = [];
+  React.Children.forEach(chidren, (node) => {
+    let route = {
+      path: node.props.path,
+      element: node.props.element,
+    };
+
+    if (node.props.children) {
+      route.children = createRoutesFromChildren(node.props.chidren);
+    }
+
+    routes.push(route);
+  });
+  return routes;
+};
+
+// ①
+export const Routes = ({ children }) => {
+  return useRoutes(createRoutesFromChildren(children));
+};
 ```
 
+2. 第一步中，使用了 LocationContext ，接下来要写 BrowserRouter ，用来初始化 LocationContext 和 NavigationContext 上下文
+
+```js
+// router.js
+
+import { createBrowserHistory } from "history";
+
+// ②
+const Router = ({ children, location, history }) => {
+  const historyContext = useMemo(() => ({ history }), [history]);
+  const locationContext = useMemo(() => ({ location }), [location]);
+
+  return (
+    <LocationContext.Provider value={historyContext}>
+      <LocationContext.Provider value={locationContext} children={children} />
+    </LocationContext.Provider>
+  );
+};
+
+// ①
+const BrowserRouter = ({ children }) => {
+  const historyRef = useRef();
+  if (historyRef.current === null) {
+    historyRef.current = createBrowserHistory();
+  }
+
+  let history = historyRef.current;
+
+  let [state, setState] = useState({
+    action: history.action,
+    location: history.location,
+  });
+
+  // listen(listener)：添加一个监听器来监听 history 变化。监听器是一个函数，它接收两个参数：location 和 action。location 是当前的 location 对象，包含 pathname、search、hash、state 和 key 等属性；action 是触发变化的动作，如 PUSH 或 POP。
+  // 此处当 history 变化的时候，（浏览器输入、获取a标签跳转，api跳转），派发更新，渲染整个 router 树
+  useLayoutEffect(() => {
+    return history.listen(setState);
+  }, [history]);
+
+  return (
+    <Router children={children} location={state.location} history={history} />
+  );
+};
 ```
